@@ -87,3 +87,14 @@ Set RPC to ADDR if RC == 1
 | OPC  | ADDR         |
 
 Set RPC to ADDR
+
+## MOV
+
+| 1000 | 000 | 0   | 00000000  |
+| ---- | --- | --- | --------- |
+| OPC  | DR  | M   | SR \| IMM |
+
+- M == 0:
+  Copy the value of SR into DR
+- M == 1:
+- Set DR's value to IMM

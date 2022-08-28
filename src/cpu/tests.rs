@@ -91,13 +91,9 @@ fn test_CMP() {
 
 #[test]
 fn test_JMC() {
-  let cpu = run_cpu_n_times(&[0x6002, 0x0000, 0x5000], 2, |cpu| {
-    cpu.regs[6] = 1;
-  });
+  let cpu = run_cpu_n_times(&[0x6002, 0x0000, 0x5000], 2, |cpu| cpu.regs[Reg::RC as usize] = 1);
   assert_eq!(cpu.regs[Reg::RPC as usize], 0x3);
-  let cpu = run_cpu_n_times(&[0x6002, 0x5000, 0x0000], 2, |cpu| {
-    cpu.regs[6] = 0;
-  });
+  let cpu = run_cpu_n_times(&[0x6002, 0x5000, 0x0000], 2, |cpu| cpu.regs[Reg::RC as usize] = 0);
   assert_eq!(cpu.regs[Reg::RPC as usize], 0x2);
 }
 
@@ -105,4 +101,12 @@ fn test_JMC() {
 fn test_JMP() {
   let cpu = run_cpu_n_times(&[0x7002, 0x0000, 0x5000], 2, |_| ());
   assert_eq!(cpu.regs[Reg::RPC as usize], 0x3);
+}
+
+#[test]
+fn test_MOV() {
+  let cpu = run_cpu(&[0x8001], |cpu| cpu.regs[1] = 10);
+  assert_eq!(cpu.regs[0], 10);
+  let cpu = run_cpu(&[0x810A], |_| ());
+  assert_eq!(cpu.regs[0], 10);
 }

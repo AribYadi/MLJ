@@ -72,6 +72,7 @@ impl CPU {
       0x5 => self.CMP(instr),
       0x6 => self.JMC(instr),
       0x7 => self.JMP(instr),
+      0x8 => self.MOV(instr),
 
       _ => error!(self.exit_handler, "Unknown opcode `{op:#04x}`!"),
     }
@@ -162,6 +163,23 @@ impl CPU {
   fn JMP(&mut self, instr: u16) {
     let addr = instr & 0xFFF;
     self.rw(Reg::RPC, addr as u32);
+  }
+
+  fn MOV(&mut self, instr: u16) {
+    let dr = unwrap_reg!(self, (instr >> 9) & 0x7);
+
+    let mode = (instr >> 8) & 0x1;
+    match mode {
+      0 => {
+        let sr = unwrap_reg!(self, instr & 0xFF);
+        self.regs[dr as usize] = self.regs[sr as usize];
+      },
+      1 => {
+        let imm = sext(instr & 0xFF, 8);
+        self.regs[dr as usize] = imm as u32;
+      },
+      _ => unreachable!(),
+    }
   }
 }
 
