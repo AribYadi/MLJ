@@ -38,7 +38,7 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## DEC
 
-| 0011 | 0   | 00000000000 |
+| 0100 | 0   | 00000000000 |
 | ---- | --- | ----------- |
 | OPC  | M   | OFF \| REG  |
 
@@ -47,3 +47,27 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 - M == 1:
   Decrement the value of register REG
+
+## CMP
+
+| 0101 | 000 | 000 | 000 | 000     |
+| ---- | --- | --- | --- | ------- |
+| OPC  | M   | SR1 | SR2 | Ignored |
+
+- M == 0:
+  Compare SR1 and SR2 and put 1 into RC if equal
+
+- M == 1:
+  Compare SR1 and SR2 and put 1 into RC if not equal
+
+- M == 2:
+  Compare SR1 and SR2 and put 1 into RC if less than
+
+- M == 3:
+  Compare SR1 and SR2 and put 1 into RC if less than or equal
+
+- M == 4:
+  Compare SR1 and SR2 and put 1 into RC if greater than
+
+- M == 5:
+  Compare SR1 and SR2 and put 1 into RC if greater than or equal

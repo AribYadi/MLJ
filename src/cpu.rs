@@ -62,6 +62,7 @@ impl CPU {
       0x2 => self.LDR(instr),
       0x3 => self.INC(instr),
       0x4 => self.DEC(instr),
+      0x5 => self.CMP(instr),
 
       _ => error!("Unknown opcode `{op:#04x}`!"),
     }
@@ -71,7 +72,7 @@ impl CPU {
 #[allow(non_snake_case)]
 impl CPU {
   fn STR(&mut self, instr: u16) {
-    let sr = (instr >> 9) & 0x07;
+    let sr = (instr >> 9) & 0x7;
     check_reg!(sr);
     let off = sext(instr & 0x1F, 9);
 
@@ -92,7 +93,7 @@ impl CPU {
     let mode = (instr >> 11) & 1;
     match mode {
       0 => {
-        let reg = instr & 0x07;
+        let reg = instr & 0x7;
         check_reg!(reg);
         let reg = &mut self.regs[reg as usize];
         *reg = reg.wrapping_add(1);
@@ -108,10 +109,10 @@ impl CPU {
   }
 
   fn DEC(&mut self, instr: u16) {
-    let mode = (instr >> 11) & 1;
+    let mode = (instr >> 11) & 0x1;
     match mode {
       0 => {
-        let reg = instr & 0x07;
+        let reg = instr & 0x7;
         check_reg!(reg);
         let reg = &mut self.regs[reg as usize];
         *reg = reg.wrapping_sub(1);
@@ -124,6 +125,24 @@ impl CPU {
       },
       _ => unreachable!(),
     }
+  }
+
+  fn CMP(&mut self, instr: u16) {
+    let sr1 = (instr >> 3) & 0x4;
+    let sr2 = (instr >> 6) & 0x4;
+
+    let mode = (instr >> 11) & 0x1;
+    let result = match mode {
+      0 => sr1 == sr2,
+      1 => sr1 != sr2,
+      2 => sr1 < sr2,
+      3 => sr1 <= sr2,
+      4 => sr1 > sr2,
+      5 => sr1 >= sr2,
+      _ => error!("Unknown mode `{mode}` for `CMP`!"),
+    };
+
+    self.rw(Reg::RC, result as u32);
   }
 }
 

@@ -5,7 +5,7 @@
 | Name   | Bits | Purpose         |
 | ------ | ---- | --------------- |
 | R0..R5 | 32   | General         |
-| RC     | 3    | Condition       |
+| RC     | 1    | Condition       |
 | RPC    | 16   | Program Counter |
 
 ## Memory
@@ -26,3 +26,4 @@ Instructions are 16 bits and are read from memory at addr RPC \
 | 0x2 | 0b0010 | [LDR](instructions.md#LDR) |
 | 0x3 | 0b0011 | [INC](instructions.md#INC) |
 | 0x4 | 0b0100 | [DEC](instructions.md#DEC) |
+| 0x5 | 0b0101 | [CMP](instructions.md#CMP) |
