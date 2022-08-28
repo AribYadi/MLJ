@@ -110,3 +110,16 @@ fn test_MOV() {
   let cpu = run_cpu(&[0x810A], |_| ());
   assert_eq!(cpu.regs[0], 10);
 }
+
+#[test]
+fn test_ADD() {
+  let cpu = run_cpu(&[0x9001], |cpu| {
+    cpu.regs[0] = 10;
+    cpu.regs[1] = 20;
+  });
+  assert_eq!(cpu.regs[0], 30);
+  let cpu = run_cpu(&[0x910A], |cpu| {
+    cpu.regs[0] = 10;
+  });
+  assert_eq!(cpu.regs[0], 20);
+}

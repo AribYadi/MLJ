@@ -73,6 +73,7 @@ impl CPU {
       0x6 => self.JMC(instr),
       0x7 => self.JMP(instr),
       0x8 => self.MOV(instr),
+      0x9 => self.ADD(instr),
 
       _ => error!(self.exit_handler, "Unknown opcode `{op:#04x}`!"),
     }
@@ -177,6 +178,23 @@ impl CPU {
       1 => {
         let imm = sext(instr & 0xFF, 8);
         self.regs[dr as usize] = imm as u32;
+      },
+      _ => unreachable!(),
+    }
+  }
+
+  fn ADD(&mut self, instr: u16) {
+    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+
+    let mode = (instr >> 8) & 0x1;
+    match mode {
+      0 => {
+        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        self.regs[sr1 as usize] += self.regs[sr2 as usize];
+      },
+      1 => {
+        let imm = sext(instr & 0xFF, 8);
+        self.regs[sr1 as usize] += imm as u32;
       },
       _ => unreachable!(),
     }

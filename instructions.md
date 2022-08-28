@@ -98,3 +98,14 @@ Set RPC to ADDR
   Copy the value of SR into DR
 - M == 1:
 - Set DR's value to IMM
+
+## ADD
+
+| 1001 | 000 | 0   | 00000000   |
+| ---- | --- | --- | ---------- |
+| OPC  | SR1 | M   | SR2 \| IMM |
+
+- M == 0:
+  Add the value of SR1 and SR2 and store the result to SR1
+- M == 1:
+  Add the value of SR1 and IMM and store the result to SR1
