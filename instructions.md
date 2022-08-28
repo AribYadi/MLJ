@@ -2,34 +2,33 @@
 
 ## EXT
 
-0000 000000000000
----- ------------
-OPC  Ignored
+| 0000 | 000000000000 |
+| ---- | ------------ |
+| OPC  | Ignored      |
 
 Exit with zero
 
 ## STR
 
-0001 000 000000000
----- --- ---------
-OPC  SR  OFF
+| 0001 | 000 | 000000000 |
+| ---- | --- | --------- |
+| OPC  | SR  | OFF       |
 
 Store SR to memory at RPC + OFF
 
 ## LDR
 
-0001 000 000000000
----- --- ---------
-OPC  DR  OFF
+| 0010 | 000 | 000000000 |
+| ---- | --- | --------- |
+| OPC  | DR  | OFF       |
 
 Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## INC
 
-0001 0 00000000000
----- - -----------
-OPC  M OFF     ---
-               REG
+| 0011 | 0   | 00000000000 |
+| ---- | --- | ----------- |
+| OPC  | M   | OFF \| REG  |
 
 ### M == 0
 
