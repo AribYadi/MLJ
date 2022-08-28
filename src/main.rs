@@ -16,9 +16,9 @@ fn main() {
 
   cpu.regs[0] = 10;
 
-  cpu.load(&[0x1002]);
+  cpu.load(&[0x1002, 0x2201]);
   cpu.run_single();
   cpu.run_single();
 
-  assert_eq!(cpu.mem[2], 10);
+  assert_eq!(cpu.regs[1], 10);
 }

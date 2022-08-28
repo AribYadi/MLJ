@@ -8,12 +8,14 @@ const REGS_COUNT: usize = 8;
 const PC_START: u16 = 0x0000;
 
 #[rustfmt::skip]
+#[allow(clippy::upper_case_acronyms)]
 enum Reg {
   R0, R1, R2, R3, R4, R5, // General purpose registers
   RC,                     // Condition
   RPC,                    // Program Counter
 }
 
+#[allow(clippy::upper_case_acronyms)]
 pub struct CPU {
   pub mem: [u16; MEM_SIZE],
   pub regs: [u32; REGS_COUNT],
@@ -28,11 +30,11 @@ impl CPU {
 
   fn rr(&self, reg: Reg) -> u32 { self.regs[reg as usize] }
 
-  fn rs(&mut self, reg: Reg, value: u32) { self.regs[reg as usize] = value; }
+  fn rw(&mut self, reg: Reg, value: u32) { self.regs[reg as usize] = value; }
 
   pub fn reset(&mut self) {
     self.regs.copy_from_slice(&[0; REGS_COUNT]);
-    self.rs(Reg::RPC, PC_START as u32);
+    self.rw(Reg::RPC, PC_START as u32);
   }
 
   pub fn load(&mut self, code: &[u16]) {
@@ -40,23 +42,38 @@ impl CPU {
   }
 
   pub fn run_single(&mut self) {
-    let instr = self.mr(self.rr(Reg::RPC) as u16);
+    let pc = self.rr(Reg::RPC);
+    let instr = self.mr(pc as u16);
+    self.rw(Reg::RPC, pc + 1);
+
     let op = instr >> 12;
 
     match op {
       0x00 => process::exit(0),
-      0x01 => self.ST(instr),
+      0x01 => self.STR(instr),
+      0x02 => self.LDR(instr),
 
       _ => error!("Unknown opcode `{op:#04x}`!"),
     }
   }
+}
 
-  fn ST(&mut self, instr: u16) {
+#[allow(non_snake_case)]
+impl CPU {
+  fn STR(&mut self, instr: u16) {
     let sr = self.regs[((instr >> 9) & 0x07) as usize];
     let off = sext(instr & 0x1F, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
     self.mw(addr, sr as u16);
+  }
+
+  fn LDR(&mut self, instr: u16) {
+    let dr = (instr >> 9) & 0x07;
+    let off = sext(instr & 0x1F, 9);
+
+    let addr = off + self.rr(Reg::RPC) as u16;
+    self.regs[dr as usize] = self.mr(addr) as u32;
   }
 }
 

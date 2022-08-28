@@ -15,3 +15,11 @@ Exit with zero
 OPC  SR  OFF
 
 Store SR to memory at RPC + OFF
+
+## LDR
+
+0001 000 000000000
+---- --- ---------
+OPC  DR  OFF
+
+Load 16 bit from memory at RPC + OFF and store it into DR
