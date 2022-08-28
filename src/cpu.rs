@@ -1,4 +1,7 @@
-use std::process;
+#![allow(dead_code)]
+
+#[cfg(test)]
+mod tests;
 
 use crate::error;
 
@@ -8,9 +11,9 @@ const REGS_COUNT: usize = 8;
 const PC_START: u16 = 0x0000;
 
 macro_rules! check_reg {
-  ($reg:expr) => {
+  ($self:ident, $reg:expr) => {
     if $reg as usize >= REGS_COUNT {
-      error!("Unknown register id `{reg}`!", reg = $reg);
+      error!($self.exit_handler, "Unknown register id `{reg}`!", reg = $reg);
     }
   };
 }
@@ -27,10 +30,13 @@ enum Reg {
 pub struct CPU {
   pub mem: [u16; MEM_SIZE],
   pub regs: [u32; REGS_COUNT],
+  exit_handler: fn(i32) -> !,
 }
 
 impl CPU {
-  pub fn new() -> CPU { CPU { mem: [0; MEM_SIZE], regs: [0; REGS_COUNT] } }
+  pub fn new() -> CPU {
+    CPU { mem: [0; MEM_SIZE], regs: [0; REGS_COUNT], exit_handler: std::process::exit }
+  }
 
   fn mr(&self, addr: AddrType) -> u16 { self.mem[addr as usize] }
 
@@ -57,14 +63,14 @@ impl CPU {
     let op = instr >> 12;
 
     match op {
-      0x0 => process::exit(0),
+      0x0 => (self.exit_handler)(0),
       0x1 => self.STR(instr),
       0x2 => self.LDR(instr),
       0x3 => self.INC(instr),
       0x4 => self.DEC(instr),
       0x5 => self.CMP(instr),
 
-      _ => error!("Unknown opcode `{op:#04x}`!"),
+      _ => error!(self.exit_handler, "Unknown opcode `{op:#04x}`!"),
     }
   }
 }
@@ -73,7 +79,7 @@ impl CPU {
 impl CPU {
   fn STR(&mut self, instr: u16) {
     let sr = (instr >> 9) & 0x7;
-    check_reg!(sr);
+    check_reg!(self, sr);
     let off = sext(instr & 0x1F, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
@@ -82,7 +88,7 @@ impl CPU {
 
   fn LDR(&mut self, instr: u16) {
     let dr = (instr >> 9) & 0x07;
-    check_reg!(dr);
+    check_reg!(self, dr);
     let off = sext(instr & 0x1FF, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
@@ -94,7 +100,7 @@ impl CPU {
     match mode {
       0 => {
         let reg = instr & 0x7;
-        check_reg!(reg);
+        check_reg!(self, reg);
         let reg = &mut self.regs[reg as usize];
         *reg = reg.wrapping_add(1);
       },
@@ -113,7 +119,7 @@ impl CPU {
     match mode {
       0 => {
         let reg = instr & 0x7;
-        check_reg!(reg);
+        check_reg!(self, reg);
         let reg = &mut self.regs[reg as usize];
         *reg = reg.wrapping_sub(1);
       },
@@ -128,10 +134,14 @@ impl CPU {
   }
 
   fn CMP(&mut self, instr: u16) {
-    let sr1 = (instr >> 3) & 0x4;
-    let sr2 = (instr >> 6) & 0x4;
+    let sr1 = (instr >> 6) & 0x7;
+    check_reg!(self, sr1);
+    let sr1 = self.regs[sr1 as usize];
+    let sr2 = (instr >> 3) & 0x7;
+    check_reg!(self, sr2);
+    let sr2 = self.regs[sr2 as usize];
 
-    let mode = (instr >> 11) & 0x1;
+    let mode = (instr >> 9) & 0x7;
     let result = match mode {
       0 => sr1 == sr2,
       1 => sr1 != sr2,
@@ -139,7 +149,7 @@ impl CPU {
       3 => sr1 <= sr2,
       4 => sr1 > sr2,
       5 => sr1 >= sr2,
-      _ => error!("Unknown mode `{mode}` for `CMP`!"),
+      _ => error!(self.exit_handler, "Unknown mode `{mode}` for `CMP`!"),
     };
 
     self.rw(Reg::RC, result as u32);
