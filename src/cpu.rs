@@ -61,6 +61,7 @@ impl CPU {
       0x1 => self.STR(instr),
       0x2 => self.LDR(instr),
       0x3 => self.INC(instr),
+      0x4 => self.DEC(instr),
 
       _ => error!("Unknown opcode `{op:#04x}`!"),
     }
@@ -101,6 +102,25 @@ impl CPU {
         let addr = off + self.rr(Reg::RPC) as u16;
         let mem = &mut self.mem[addr as usize];
         *mem = mem.wrapping_add(1);
+      },
+      _ => unreachable!(),
+    }
+  }
+
+  fn DEC(&mut self, instr: u16) {
+    let mode = (instr >> 11) & 1;
+    match mode {
+      0 => {
+        let reg = instr & 0x07;
+        check_reg!(reg);
+        let reg = &mut self.regs[reg as usize];
+        *reg = reg.wrapping_sub(1);
+      },
+      1 => {
+        let off = sext(instr & 0x7FF, 11);
+        let addr = off + self.rr(Reg::RPC) as u16;
+        let mem = &mut self.mem[addr as usize];
+        *mem = mem.wrapping_sub(1);
       },
       _ => unreachable!(),
     }

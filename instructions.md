@@ -30,10 +30,20 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 | ---- | --- | ----------- |
 | OPC  | M   | OFF \| REG  |
 
-### M == 0
+- M == 0:
+  Increment the value at memory at RPC + OFF
 
-Increment value at memory at RPC + OFF
+- M == 1:
+  Increment the value of register REG
 
-### M == 1
+## DEC
 
-Increment value of register REG
+| 0011 | 0   | 00000000000 |
+| ---- | --- | ----------- |
+| OPC  | M   | OFF \| REG  |
+
+- M == 0:
+  Decrement the value at memory at RPC + OFF
+
+- M == 1:
+  Decrement the value of register REG

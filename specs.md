@@ -25,3 +25,4 @@ Instructions are 16 bits and are read from memory at addr RPC \
 | 0x1 | 0b0001 | [STR](instructions.md#STR) |
 | 0x2 | 0b0010 | [LDR](instructions.md#LDR) |
 | 0x3 | 0b0011 | [INC](instructions.md#INC) |
+| 0x4 | 0b0100 | [DEC](instructions.md#DEC) |
