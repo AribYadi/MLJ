@@ -10,12 +10,13 @@ type AddrType = u16;
 const REGS_COUNT: usize = 8;
 const PC_START: u16 = 0x0000;
 
-macro_rules! check_reg {
-  ($self:ident, $reg:expr) => {
+macro_rules! unwrap_reg {
+  ($self:ident, $reg:expr) => {{
     if $reg as usize >= REGS_COUNT {
       error!($self.exit_handler, "Unknown register id `{reg}`!", reg = $reg);
     }
-  };
+    $reg
+  }};
 }
 
 #[rustfmt::skip]
@@ -78,8 +79,7 @@ impl CPU {
 #[allow(non_snake_case)]
 impl CPU {
   fn STR(&mut self, instr: u16) {
-    let sr = (instr >> 9) & 0x7;
-    check_reg!(self, sr);
+    let sr = unwrap_reg!(self, (instr >> 9) & 0x7);
     let off = sext(instr & 0x1F, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
@@ -87,8 +87,7 @@ impl CPU {
   }
 
   fn LDR(&mut self, instr: u16) {
-    let dr = (instr >> 9) & 0x07;
-    check_reg!(self, dr);
+    let dr = unwrap_reg!(self, (instr >> 9) & 0x07);
     let off = sext(instr & 0x1FF, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
@@ -99,8 +98,7 @@ impl CPU {
     let mode = (instr >> 11) & 1;
     match mode {
       0 => {
-        let reg = instr & 0x7;
-        check_reg!(self, reg);
+        let reg = unwrap_reg!(self, instr & 0x7);
         let reg = &mut self.regs[reg as usize];
         *reg = reg.wrapping_add(1);
       },
@@ -118,8 +116,7 @@ impl CPU {
     let mode = (instr >> 11) & 0x1;
     match mode {
       0 => {
-        let reg = instr & 0x7;
-        check_reg!(self, reg);
+        let reg = unwrap_reg!(self, instr & 0x7);
         let reg = &mut self.regs[reg as usize];
         *reg = reg.wrapping_sub(1);
       },
@@ -134,11 +131,9 @@ impl CPU {
   }
 
   fn CMP(&mut self, instr: u16) {
-    let sr1 = (instr >> 6) & 0x7;
-    check_reg!(self, sr1);
+    let sr1 = unwrap_reg!(self, (instr >> 6) & 0x7);
     let sr1 = self.regs[sr1 as usize];
-    let sr2 = (instr >> 3) & 0x7;
-    check_reg!(self, sr2);
+    let sr2 = unwrap_reg!(self, (instr >> 3) & 0x7);
     let sr2 = self.regs[sr2 as usize];
 
     let mode = (instr >> 9) & 0x7;
