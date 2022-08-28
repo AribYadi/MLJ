@@ -23,3 +23,18 @@ Store SR to memory at RPC + OFF
 OPC  DR  OFF
 
 Load 16 bit from memory at RPC + OFF and store it into DR
+
+## INC
+
+0001 0 00000000000
+---- - -----------
+OPC  M OFF     ---
+               REG
+
+### M == 0
+
+Increment value at memory at RPC + OFF
+
+### M == 1
+
+Increment value of register REG

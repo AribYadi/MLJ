@@ -7,6 +7,14 @@ type AddrType = u16;
 const REGS_COUNT: usize = 8;
 const PC_START: u16 = 0x0000;
 
+macro_rules! check_reg {
+  ($reg:expr) => {
+    if $reg as usize >= REGS_COUNT {
+      error!("Unknown register id `{reg}`!", reg = $reg);
+    }
+  };
+}
+
 #[rustfmt::skip]
 #[allow(clippy::upper_case_acronyms)]
 enum Reg {
@@ -49,9 +57,10 @@ impl CPU {
     let op = instr >> 12;
 
     match op {
-      0x00 => process::exit(0),
-      0x01 => self.STR(instr),
-      0x02 => self.LDR(instr),
+      0x0 => process::exit(0),
+      0x1 => self.STR(instr),
+      0x2 => self.LDR(instr),
+      0x3 => self.INC(instr),
 
       _ => error!("Unknown opcode `{op:#04x}`!"),
     }
@@ -61,19 +70,40 @@ impl CPU {
 #[allow(non_snake_case)]
 impl CPU {
   fn STR(&mut self, instr: u16) {
-    let sr = self.regs[((instr >> 9) & 0x07) as usize];
+    let sr = (instr >> 9) & 0x07;
+    check_reg!(sr);
     let off = sext(instr & 0x1F, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
-    self.mw(addr, sr as u16);
+    self.mw(addr, self.regs[sr as usize] as u16);
   }
 
   fn LDR(&mut self, instr: u16) {
     let dr = (instr >> 9) & 0x07;
-    let off = sext(instr & 0x1F, 9);
+    check_reg!(dr);
+    let off = sext(instr & 0x1FF, 9);
 
     let addr = off + self.rr(Reg::RPC) as u16;
     self.regs[dr as usize] = self.mr(addr) as u32;
+  }
+
+  fn INC(&mut self, instr: u16) {
+    let mode = (instr >> 11) & 1;
+    match mode {
+      0 => {
+        let reg = instr & 0x07;
+        check_reg!(reg);
+        let reg = &mut self.regs[reg as usize];
+        *reg = reg.wrapping_add(1);
+      },
+      1 => {
+        let off = sext(instr & 0x7FF, 11);
+        let addr = off + self.rr(Reg::RPC) as u16;
+        let mem = &mut self.mem[addr as usize];
+        *mem = mem.wrapping_add(1);
+      },
+      _ => unreachable!(),
+    }
   }
 }
 
