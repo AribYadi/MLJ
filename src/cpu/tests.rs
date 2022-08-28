@@ -6,7 +6,9 @@ fn panic(e: i32) -> ! {
   panic!("Exited with error code {e}.");
 }
 
-fn run_cpu(code: &[u16], init: fn(&mut CPU)) -> CPU {
+fn run_cpu(code: &[u16], init: fn(&mut CPU)) -> CPU { run_cpu_n_times(code, code.len(), init) }
+
+fn run_cpu_n_times(code: &[u16], n: usize, init: fn(&mut CPU)) -> CPU {
   let mut cpu = CPU::new();
   cpu.exit_handler = panic;
 
@@ -14,7 +16,7 @@ fn run_cpu(code: &[u16], init: fn(&mut CPU)) -> CPU {
   cpu.load(code);
   init(&mut cpu);
 
-  for _ in 0..code.len() {
+  for _ in 0..n {
     cpu.run_single();
   }
 
@@ -85,4 +87,16 @@ fn test_CMP() {
     cpu.regs[2] = 10;
   });
   assert_eq!(cpu.regs[Reg::RC as usize], 1);
+}
+
+#[test]
+fn test_JMC() {
+  let cpu = run_cpu_n_times(&[0x6002, 0x0000, 0x5000], 2, |cpu| {
+    cpu.regs[6] = 1;
+  });
+  assert_eq!(cpu.regs[Reg::RPC as usize], 0x3);
+  let cpu = run_cpu_n_times(&[0x6002, 0x5000, 0x0000], 2, |cpu| {
+    cpu.regs[6] = 0;
+  });
+  assert_eq!(cpu.regs[Reg::RPC as usize], 0x2);
 }

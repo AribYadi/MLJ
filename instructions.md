@@ -71,3 +71,11 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 - M == 5:
   Compare SR1 and SR2 and put 1 into RC if greater than or equal
+
+## JMC
+
+| 0110 | 000000000000 |
+| ---- | ------------ |
+| OPC  | ADDR         |
+
+Set RPC to ADDR if RC == 1

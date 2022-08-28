@@ -58,6 +58,7 @@ impl CPU {
 
   pub fn run_single(&mut self) {
     let pc = self.rr(Reg::RPC);
+    dbg!(pc);
     let instr = self.mr(pc as u16);
     self.rw(Reg::RPC, pc + 1);
 
@@ -70,6 +71,7 @@ impl CPU {
       0x3 => self.INC(instr),
       0x4 => self.DEC(instr),
       0x5 => self.CMP(instr),
+      0x6 => self.JMC(instr),
 
       _ => error!(self.exit_handler, "Unknown opcode `{op:#04x}`!"),
     }
@@ -148,6 +150,13 @@ impl CPU {
     };
 
     self.rw(Reg::RC, result as u32);
+  }
+
+  fn JMC(&mut self, instr: u16) {
+    if self.rr(Reg::RC) == 1 {
+      let addr = instr & 0xFFF;
+      self.rw(Reg::RPC, addr as u32);
+    }
   }
 }
 
