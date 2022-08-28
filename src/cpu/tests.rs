@@ -100,3 +100,9 @@ fn test_JMC() {
   });
   assert_eq!(cpu.regs[Reg::RPC as usize], 0x2);
 }
+
+#[test]
+fn test_JMP() {
+  let cpu = run_cpu_n_times(&[0x7002, 0x0000, 0x5000], 2, |_| ());
+  assert_eq!(cpu.regs[Reg::RPC as usize], 0x3);
+}

@@ -79,3 +79,11 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 | OPC  | ADDR         |
 
 Set RPC to ADDR if RC == 1
+
+## JMP
+
+| 0111 | 000000000000 |
+| ---- | ------------ |
+| OPC  | ADDR         |
+
+Set RPC to ADDR

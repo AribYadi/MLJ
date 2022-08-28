@@ -28,3 +28,4 @@ Instructions are 16 bits and are read from memory at addr RPC \
 | 0x4 | 0b0100 | [DEC](instructions.md#DEC) |
 | 0x5 | 0b0101 | [CMP](instructions.md#CMP) |
 | 0x6 | 0b0110 | [JMC](instructions.md#JMC) |
+| 0x7 | 0b0111 | [JMP](instructions.md#JMP) |
