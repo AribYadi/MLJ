@@ -22,3 +22,4 @@ Instructions are 16 bits and are read from memory at addr RPC \
 | Hex  | Binary | Name                       |
 | ---- | ------ | -------------------------- |
 | 0x00 | 0b0000 | [EXT](instructions.md#EXT) |
+| 0x01 | 0b0001 | [STR](instructions.md#STR) |

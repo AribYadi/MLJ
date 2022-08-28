@@ -15,8 +15,8 @@ enum Reg {
 }
 
 pub struct CPU {
-  mem: [u16; MEM_SIZE],
-  regs: [u32; REGS_COUNT],
+  pub mem: [u16; MEM_SIZE],
+  pub regs: [u32; REGS_COUNT],
 }
 
 impl CPU {
@@ -30,7 +30,10 @@ impl CPU {
 
   fn rs(&mut self, reg: Reg, value: u32) { self.regs[reg as usize] = value; }
 
-  pub fn reset(&mut self) { self.rs(Reg::RPC, PC_START as u32); }
+  pub fn reset(&mut self) {
+    self.regs.copy_from_slice(&[0; REGS_COUNT]);
+    self.rs(Reg::RPC, PC_START as u32);
+  }
 
   pub fn load(&mut self, code: &[u16]) {
     self.mem[PC_START as usize..PC_START as usize + code.len()].copy_from_slice(code);
@@ -41,8 +44,26 @@ impl CPU {
     let op = instr >> 12;
 
     match op {
-      0x0000 => process::exit(0),
+      0x00 => process::exit(0),
+      0x01 => self.ST(instr),
+
       _ => error!("Unknown opcode `{op:#04x}`!"),
     }
+  }
+
+  fn ST(&mut self, instr: u16) {
+    let sr = self.regs[((instr >> 9) & 0x07) as usize];
+    let off = sext(instr & 0x1F, 9);
+
+    let addr = off + self.rr(Reg::RPC) as u16;
+    self.mw(addr, sr as u16);
+  }
+}
+
+fn sext(n: u16, bits: u16) -> u16 {
+  if ((n >> (bits - 1)) & 1) == 1 {
+    n | (u16::MAX << bits)
+  } else {
+    n
   }
 }

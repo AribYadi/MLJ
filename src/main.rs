@@ -13,7 +13,12 @@ macro_rules! error {
 fn main() {
   let mut cpu = CPU::new();
   cpu.reset();
-  cpu.load(&[0x0000]);
+
+  cpu.regs[0] = 10;
+
+  cpu.load(&[0x1002]);
   cpu.run_single();
   cpu.run_single();
+
+  assert_eq!(cpu.mem[2], 10);
 }
