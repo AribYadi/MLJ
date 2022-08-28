@@ -1,4 +1,11 @@
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - "**/*.md"
+      - ".rustfmt.toml"
+      - "rust-toolchain"
+      - ".github/workflows/ci.yaml"
+  pull_request:
 
 name: CI
 
