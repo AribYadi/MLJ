@@ -2,33 +2,33 @@
 
 ## EXT
 
-| 0000 | 000000000000 |
-| ---- | ------------ |
-| OPC  | Ignored      |
+| 00000 | 00000000000 |
+| ----- | ----------- |
+| OPC   | Ignored     |
 
 Exit with zero
 
 ## STR
 
-| 0001 | 0000 | 00000000 |
-| ---- | ---- | -------- |
-| OPC  | SR   | OFF      |
+| 00001 | 0000 | 0000000 |
+| ----- | ---- | ------- |
+| OPC   | SR   | OFF     |
 
 Store SR to memory at RPC + OFF
 
 ## LDR
 
-| 0010 | 0000 | 00000000 |
-| ---- | ---- | -------- |
-| OPC  | DR   | OFF      |
+| 00010 | 0000 | 0000000 |
+| ----- | ---- | ------- |
+| OPC   | DR   | OFF     |
 
 Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## INC
 
-| 0011 | 0   | 00000000000 |
-| ---- | --- | ----------- |
-| OPC  | M   | OFF \| REG  |
+| 00011 | 0   | 0000000000 |
+| ----- | --- | ---------- |
+| OPC   | M   | OFF \| REG |
 
 - M == 0:
   Increment the value at memory at RPC + OFF
@@ -38,9 +38,9 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## DEC
 
-| 0100 | 0   | 00000000000 |
-| ---- | --- | ----------- |
-| OPC  | M   | OFF \| REG  |
+| 00100 | 0   | 0000000000 |
+| ----- | --- | ---------- |
+| OPC   | M   | OFF \| REG |
 
 - M == 0:
   Decrement the value at memory at RPC + OFF
@@ -50,9 +50,9 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## CMP
 
-| 0101 | 000 | 0000 | 0000 | 0       |
-| ---- | --- | ---- | ---- | ------- |
-| OPC  | M   | SR1  | SR2  | Ignored |
+| 00101 | 000 | 0000 | 0000 |
+| ----- | --- | ---- | ---- |
+| OPC   | M   | SR1  | SR2  |
 
 - M == 0:
   Compare SR1 and SR2 and put 1 into RC if equal
@@ -74,25 +74,25 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## JMC
 
-| 0110 | 000000000000 |
-| ---- | ------------ |
-| OPC  | ADDR         |
+| 00110 | 00000000000 |
+| ----- | ----------- |
+| OPC   | ADDR        |
 
 Set RPC to ADDR if RC == 1
 
 ## JMP
 
-| 0111 | 000000000000 |
-| ---- | ------------ |
-| OPC  | ADDR         |
+| 00111 | 00000000000 |
+| ----- | ----------- |
+| OPC   | ADDR        |
 
 Set RPC to ADDR
 
 ## MOV
 
-| 1000 | 0000 | 0   | 0000000   |
-| ---- | ---- | --- | --------- |
-| OPC  | DR   | M   | SR \| IMM |
+| 01000 | 0000 | 0   | 000000    |
+| ----- | ---- | --- | --------- |
+| OPC   | DR   | M   | SR \| IMM |
 
 - M == 0:
   Copy the value of SR into DR
@@ -101,9 +101,9 @@ Set RPC to ADDR
 
 ## ADD
 
-| 1001 | 0000 | 0   | 0000000    |
-| ---- | ---- | --- | ---------- |
-| OPC  | SR1  | M   | SR2 \| IMM |
+| 01001 | 0000 | 0   | 000000     |
+| ----- | ---- | --- | ---------- |
+| OPC   | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Add the value of SR1 and SR2 and store the result to SR1
@@ -112,9 +112,9 @@ Set RPC to ADDR
 
 ## SUB
 
-| 1010 | 0000 | 0   | 0000000    |
-| ---- | ---- | --- | ---------- |
-| OPC  | SR1  | M   | SR2 \| IMM |
+| 01010 | 0000 | 0   | 000000     |
+| ----- | ---- | --- | ---------- |
+| OPC   | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Subtract the value of SR1 and SR2 and store the result to SR1
@@ -123,9 +123,9 @@ Set RPC to ADDR
 
 ## MUL
 
-| 1011 | 0000 | 0   | 0000000    |
-| ---- | ---- | --- | ---------- |
-| OPC  | SR1  | M   | SR2 \| IMM |
+| 01011 | 0000 | 0   | 000000     |
+| ----- | ---- | --- | ---------- |
+| OPC   | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Multiply the value of SR1 and SR2 and store the result to SR1
@@ -134,9 +134,9 @@ Set RPC to ADDR
 
 ## DIV
 
-| 1100 | 0000 | 0   | 0000000    |
-| ---- | ---- | --- | ---------- |
-| OPC  | SR1  | M   | SR2 \| IMM |
+| 01100 | 0000 | 0   | 000000     |
+| ----- | ---- | --- | ---------- |
+| OPC   | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Divide the value of SR1 and SR2 and store the result to SR1
@@ -145,9 +145,9 @@ Set RPC to ADDR
 
 ## REM
 
-| 1101 | 0000 | 0   | 0000000    |
-| ---- | ---- | --- | ---------- |
-| OPC  | SR1  | M   | SR2 \| IMM |
+| 01101 | 0000 | 0   | 000000     |
+| ----- | ---- | --- | ---------- |
+| OPC   | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Divide the value of SR1 and SR2 and store the remainder to SR1
@@ -156,16 +156,16 @@ Set RPC to ADDR
 
 ## CLL
 
-| 1110 | 000000000000 |
-| ---- | ------------ |
-| OPC  | ADDR         |
+| 01110 | 00000000000 |
+| ----- | ----------- |
+| OPC   | ADDR        |
 
 Push the current RPC to the call stack then set RPC to ADDR
 
 ## RET
 
-| 1111 | 000000000000 |
-| ---- | ------------ |
-| OPC  | Ignored      |
+| 01111 | 00000000000 |
+| ----- | ----------- |
+| OPC   | Ignored     |
 
 Pop the top of the call stack and set RPC to the result
