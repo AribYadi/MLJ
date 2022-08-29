@@ -142,3 +142,14 @@ Set RPC to ADDR
   Divide the value of SR1 and SR2 and store the result to SR1
 - M == 1:
   Divide the value of SR1 and IMM and store the result to SR1
+
+## REM
+
+| 1100 | 000 | 0   | 00000000   |
+| ---- | --- | --- | ---------- |
+| OPC  | SR1 | M   | SR2 \| IMM |
+
+- M == 0:
+  Divide the value of SR1 and SR2 and store the remainder to SR1
+- M == 1:
+  Divide the value of SR1 and IMM and store the remainder to SR1

@@ -162,3 +162,16 @@ fn test_DIV() {
   });
   assert_eq!(cpu.regs[0], 1);
 }
+
+#[test]
+fn test_REM() {
+  let cpu = run_cpu(&[0xD001], |cpu| {
+    cpu.regs[0] = 20;
+    cpu.regs[1] = 10;
+  });
+  assert_eq!(cpu.regs[0], 0);
+  let cpu = run_cpu(&[0xD10A], |cpu| {
+    cpu.regs[0] = 25;
+  });
+  assert_eq!(cpu.regs[0], 5);
+}
