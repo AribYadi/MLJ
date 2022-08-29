@@ -136,3 +136,16 @@ fn test_SUB() {
   });
   assert_eq!(cpu.regs[0], 0);
 }
+
+#[test]
+fn test_MUL() {
+  let cpu = run_cpu(&[0xB001], |cpu| {
+    cpu.regs[0] = 10;
+    cpu.regs[1] = 20;
+  });
+  assert_eq!(cpu.regs[0], 200);
+  let cpu = run_cpu(&[0xB10A], |cpu| {
+    cpu.regs[0] = 10;
+  });
+  assert_eq!(cpu.regs[0], 100);
+}

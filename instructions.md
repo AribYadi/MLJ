@@ -120,3 +120,14 @@ Set RPC to ADDR
   Subtract the value of SR1 and SR2 and store the result to SR1
 - M == 1:
   Subtract the value of SR1 and IMM and store the result to SR1
+
+## MUL
+
+| 1001 | 000 | 0   | 00000000   |
+| ---- | --- | --- | ---------- |
+| OPC  | SR1 | M   | SR2 \| IMM |
+
+- M == 0:
+  Multiply the value of SR1 and SR2 and store the result to SR1
+- M == 1:
+  Multiply the value of SR1 and IMM and store the result to SR1

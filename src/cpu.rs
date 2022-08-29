@@ -75,6 +75,7 @@ impl CPU {
       0x8 => self.MOV(instr),
       0x9 => self.ADD(instr),
       0xA => self.SUB(instr),
+      0xB => self.MUL(instr),
 
       _ => error!(self.exit_handler, "Unknown opcode `{op:#02x}`!"),
     }
@@ -219,6 +220,26 @@ impl CPU {
         let imm = sext(instr & 0xFF, 8);
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_sub(imm as u32);
+      },
+      _ => unreachable!(),
+    }
+  }
+
+  fn MUL(&mut self, instr: u16) {
+    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+
+    let mode = (instr >> 8) & 0x1;
+    match mode {
+      0 => {
+        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = self.regs[sr2 as usize];
+        let sr1 = &mut self.regs[sr1 as usize];
+        *sr1 = sr1.wrapping_mul(sr2);
+      },
+      1 => {
+        let imm = sext(instr & 0xFF, 8);
+        let sr1 = &mut self.regs[sr1 as usize];
+        *sr1 = sr1.wrapping_mul(imm as u32);
       },
       _ => unreachable!(),
     }
