@@ -149,3 +149,16 @@ fn test_MUL() {
   });
   assert_eq!(cpu.regs[0], 100);
 }
+
+#[test]
+fn test_DIV() {
+  let cpu = run_cpu(&[0xC001], |cpu| {
+    cpu.regs[0] = 20;
+    cpu.regs[1] = 10;
+  });
+  assert_eq!(cpu.regs[0], 2);
+  let cpu = run_cpu(&[0xC10A], |cpu| {
+    cpu.regs[0] = 10;
+  });
+  assert_eq!(cpu.regs[0], 1);
+}

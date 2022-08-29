@@ -112,7 +112,7 @@ Set RPC to ADDR
 
 ## SUB
 
-| 1001 | 000 | 0   | 00000000   |
+| 1010 | 000 | 0   | 00000000   |
 | ---- | --- | --- | ---------- |
 | OPC  | SR1 | M   | SR2 \| IMM |
 
@@ -123,7 +123,7 @@ Set RPC to ADDR
 
 ## MUL
 
-| 1001 | 000 | 0   | 00000000   |
+| 1011 | 000 | 0   | 00000000   |
 | ---- | --- | --- | ---------- |
 | OPC  | SR1 | M   | SR2 \| IMM |
 
@@ -131,3 +131,14 @@ Set RPC to ADDR
   Multiply the value of SR1 and SR2 and store the result to SR1
 - M == 1:
   Multiply the value of SR1 and IMM and store the result to SR1
+
+## DIV
+
+| 1100 | 000 | 0   | 00000000   |
+| ---- | --- | --- | ---------- |
+| OPC  | SR1 | M   | SR2 \| IMM |
+
+- M == 0:
+  Divide the value of SR1 and SR2 and store the result to SR1
+- M == 1:
+  Divide the value of SR1 and IMM and store the result to SR1
