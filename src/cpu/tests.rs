@@ -91,15 +91,15 @@ fn test_CMP() {
 
 #[test]
 fn test_JMC() {
-  let cpu = run_cpu_n_times(&[0x6002, 0x0000, 0x5000], 2, |cpu| cpu.regs[Reg::RC as usize] = 1);
+  let cpu = run_cpu_n_times(&[0x6003], 1, |cpu| cpu.regs[Reg::RC as usize] = 1);
   assert_eq!(cpu.regs[Reg::RPC as usize], 0x3);
-  let cpu = run_cpu_n_times(&[0x6002, 0x5000, 0x0000], 2, |cpu| cpu.regs[Reg::RC as usize] = 0);
-  assert_eq!(cpu.regs[Reg::RPC as usize], 0x2);
+  let cpu = run_cpu_n_times(&[0x6003], 1, |cpu| cpu.regs[Reg::RC as usize] = 0);
+  assert_eq!(cpu.regs[Reg::RPC as usize], PC_START as u32 + 1);
 }
 
 #[test]
 fn test_JMP() {
-  let cpu = run_cpu_n_times(&[0x7002, 0x0000, 0x5000], 2, |_| ());
+  let cpu = run_cpu_n_times(&[0x7003], 1, |_| ());
   assert_eq!(cpu.regs[Reg::RPC as usize], 0x3);
 }
 
@@ -174,4 +174,18 @@ fn test_REM() {
     cpu.regs[0] = 25;
   });
   assert_eq!(cpu.regs[0], 5);
+}
+
+#[test]
+fn test_CLL() {
+  let cpu = run_cpu(&[0xE000], |_| ());
+  assert_eq!(cpu.mem[CALL_STACK_START as usize], PC_START + 1);
+  assert_eq!(cpu.rr(Reg::RSP), CALL_STACK_START as u32 - 1);
+}
+
+#[test]
+fn test_RET() {
+  let cpu = run_cpu_n_times(&[0xE000], 2, |cpu| cpu.mem[0x0000] = 0xF000);
+  assert_eq!(cpu.rr(Reg::RSP), CALL_STACK_START as u32);
+  assert_eq!(cpu.rr(Reg::RPC), PC_START as u32 + 1);
 }

@@ -7,8 +7,9 @@ use crate::error;
 
 const MEM_SIZE: usize = 0xFFFF;
 type AddrType = u16;
-const REGS_COUNT: usize = 8;
-const PC_START: u16 = 0x0000;
+const REGS_COUNT: usize = 9;
+const CALL_STACK_START: u16 = 0x200;
+const PC_START: u16 = CALL_STACK_START + 1;
 
 macro_rules! unwrap_reg {
   ($self:ident, $reg:expr) => {{
@@ -25,6 +26,7 @@ enum Reg {
   R0, R1, R2, R3, R4, R5, // General purpose registers
   RC,                     // Condition
   RPC,                    // Program Counter
+  RSP,                    // Stack Pointer
 }
 
 #[allow(clippy::upper_case_acronyms)]
@@ -47,9 +49,24 @@ impl CPU {
 
   fn rw(&mut self, reg: Reg, value: u32) { self.regs[reg as usize] = value; }
 
+  fn push_rpc(&mut self) {
+    let rpc = self.rr(Reg::RPC) as u16;
+    let rsp = &mut self.regs[Reg::RSP as usize];
+    self.mem[*rsp as usize] = rpc;
+    *rsp -= 1;
+  }
+
+  fn pop_rpc(&mut self) {
+    let rsp = &mut self.regs[Reg::RSP as usize];
+    *rsp += 1;
+    let rpc = self.mem[*rsp as usize];
+    self.rw(Reg::RPC, rpc as u32);
+  }
+
   pub fn reset(&mut self) {
     self.regs.copy_from_slice(&[0; REGS_COUNT]);
     self.rw(Reg::RPC, PC_START as u32);
+    self.rw(Reg::RSP, CALL_STACK_START as u32);
   }
 
   pub fn load(&mut self, code: &[u16]) {
@@ -78,6 +95,8 @@ impl CPU {
       0xB => self.MUL(instr),
       0xC => self.DIV(instr),
       0xD => self.REM(instr),
+      0xE => self.CLL(instr),
+      0xF => self.RET(instr),
 
       _ => error!(self.exit_handler, "Unknown opcode `{op:#02x}`!"),
     }
@@ -286,6 +305,14 @@ impl CPU {
       _ => unreachable!(),
     }
   }
+
+  fn CLL(&mut self, instr: u16) {
+    self.push_rpc();
+    let addr = instr & 0xFFF;
+    self.rw(Reg::RPC, addr as u32);
+  }
+
+  fn RET(&mut self, _instr: u16) { self.pop_rpc(); }
 }
 
 fn sext(n: u16, bits: u16) -> u16 {

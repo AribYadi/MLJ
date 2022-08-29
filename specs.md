@@ -7,6 +7,7 @@
 | R0..R5 | 32   | General         |
 | RC     | 1    | Condition       |
 | RPC    | 16   | Program Counter |
+| RSP    | 16   | Stack Pointer   |
 
 ## Memory
 
@@ -35,3 +36,5 @@ Instructions are 16 bits and are read from memory at addr RPC \
 | 0xB | 0b1011 | [MUL](instructions.md#MUL) |
 | 0xC | 0b1100 | [DIV](instructions.md#DIV) |
 | 0xD | 0b1101 | [REM](instructions.md#REM) |
+| 0xE | 0b1110 | [CLL](instructions.md#CLL) |
+| 0xF | 0b111F | [RET](instructions.md#RET) |

@@ -145,7 +145,7 @@ Set RPC to ADDR
 
 ## REM
 
-| 1100 | 000 | 0   | 00000000   |
+| 1101 | 000 | 0   | 00000000   |
 | ---- | --- | --- | ---------- |
 | OPC  | SR1 | M   | SR2 \| IMM |
 
@@ -153,3 +153,19 @@ Set RPC to ADDR
   Divide the value of SR1 and SR2 and store the remainder to SR1
 - M == 1:
   Divide the value of SR1 and IMM and store the remainder to SR1
+
+## CLL
+
+| 1110 | 000000000000 |
+| ---- | ------------ |
+| OPC  | ADDR         |
+
+Push the current RPC to the call stack then set RPC to ADDR
+
+## RET
+
+| 1111 | 000000000000 |
+| ---- | ------------ |
+| OPC  | Ignored      |
+
+Pop the top of the call stack and set RPC to the result
