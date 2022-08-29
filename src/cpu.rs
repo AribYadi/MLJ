@@ -74,8 +74,9 @@ impl CPU {
       0x7 => self.JMP(instr),
       0x8 => self.MOV(instr),
       0x9 => self.ADD(instr),
+      0xA => self.SUB(instr),
 
-      _ => error!(self.exit_handler, "Unknown opcode `{op:#04x}`!"),
+      _ => error!(self.exit_handler, "Unknown opcode `{op:#02x}`!"),
     }
   }
 }
@@ -190,11 +191,34 @@ impl CPU {
     match mode {
       0 => {
         let sr2 = unwrap_reg!(self, instr & 0xFF);
-        self.regs[sr1 as usize] += self.regs[sr2 as usize];
+        let sr2 = self.regs[sr2 as usize];
+        let sr1 = &mut self.regs[sr1 as usize];
+        *sr1 = sr1.wrapping_add(sr2);
       },
       1 => {
         let imm = sext(instr & 0xFF, 8);
-        self.regs[sr1 as usize] += imm as u32;
+        let sr1 = &mut self.regs[sr1 as usize];
+        *sr1 = sr1.wrapping_add(imm as u32);
+      },
+      _ => unreachable!(),
+    }
+  }
+
+  fn SUB(&mut self, instr: u16) {
+    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+
+    let mode = (instr >> 8) & 0x1;
+    match mode {
+      0 => {
+        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = self.regs[sr2 as usize];
+        let sr1 = &mut self.regs[sr1 as usize];
+        *sr1 = sr1.wrapping_sub(sr2);
+      },
+      1 => {
+        let imm = sext(instr & 0xFF, 8);
+        let sr1 = &mut self.regs[sr1 as usize];
+        *sr1 = sr1.wrapping_sub(imm as u32);
       },
       _ => unreachable!(),
     }

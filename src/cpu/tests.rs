@@ -123,3 +123,16 @@ fn test_ADD() {
   });
   assert_eq!(cpu.regs[0], 20);
 }
+
+#[test]
+fn test_SUB() {
+  let cpu = run_cpu(&[0xA001], |cpu| {
+    cpu.regs[0] = 10;
+    cpu.regs[1] = 20;
+  });
+  assert_eq!(cpu.regs[0], -10i32 as u32);
+  let cpu = run_cpu(&[0xA10A], |cpu| {
+    cpu.regs[0] = 10;
+  });
+  assert_eq!(cpu.regs[0], 0);
+}
