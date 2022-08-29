@@ -98,7 +98,7 @@ impl CPU {
       0x0E => self.CLL(instr),
       0x0F => self.RET(instr),
 
-      _ => error!(self.exit_handler, "Unknown opcode `{op:#02x}`!"),
+      _ => error!(self.exit_handler, "Unknown opcode `{op:#04x}`!"),
     }
   }
 }
