@@ -106,16 +106,16 @@ impl CPU {
 #[allow(non_snake_case)]
 impl CPU {
   fn STR(&mut self, instr: u16) {
-    let sr = unwrap_reg!(self, (instr >> 9) & 0x7);
-    let off = sext(instr & 0x1F, 9);
+    let sr = unwrap_reg!(self, (instr >> 8) & 0xF);
+    let off = sext(instr & 0xFF, 8);
 
     let addr = off + self.rr(Reg::RPC) as u16;
     self.mw(addr, self.regs[sr as usize] as u16);
   }
 
   fn LDR(&mut self, instr: u16) {
-    let dr = unwrap_reg!(self, (instr >> 9) & 0x07);
-    let off = sext(instr & 0x1FF, 9);
+    let dr = unwrap_reg!(self, (instr >> 8) & 0xF);
+    let off = sext(instr & 0xFF, 8);
 
     let addr = off + self.rr(Reg::RPC) as u16;
     self.regs[dr as usize] = self.mr(addr) as u32;
@@ -158,9 +158,9 @@ impl CPU {
   }
 
   fn CMP(&mut self, instr: u16) {
-    let sr1 = unwrap_reg!(self, (instr >> 6) & 0x7);
+    let sr1 = unwrap_reg!(self, (instr >> 5) & 0xF);
     let sr1 = self.regs[sr1 as usize];
-    let sr2 = unwrap_reg!(self, (instr >> 3) & 0x7);
+    let sr2 = unwrap_reg!(self, (instr >> 1) & 0xF);
     let sr2 = self.regs[sr2 as usize];
 
     let mode = (instr >> 9) & 0x7;
@@ -190,16 +190,16 @@ impl CPU {
   }
 
   fn MOV(&mut self, instr: u16) {
-    let dr = unwrap_reg!(self, (instr >> 9) & 0x7);
+    let dr = unwrap_reg!(self, (instr >> 8) & 0xF);
 
-    let mode = (instr >> 8) & 0x1;
+    let mode = (instr >> 7) & 0x1;
     match mode {
       0 => {
-        let sr = unwrap_reg!(self, instr & 0xFF);
+        let sr = unwrap_reg!(self, instr & 0xF);
         self.regs[dr as usize] = self.regs[sr as usize];
       },
       1 => {
-        let imm = sext(instr & 0xFF, 8);
+        let imm = sext(instr & 0x7F, 8);
         self.regs[dr as usize] = imm as u32;
       },
       _ => unreachable!(),
@@ -207,18 +207,18 @@ impl CPU {
   }
 
   fn ADD(&mut self, instr: u16) {
-    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+    let sr1 = unwrap_reg!(self, (instr >> 8) & 0xF);
 
-    let mode = (instr >> 8) & 0x1;
+    let mode = (instr >> 7) & 0x1;
     match mode {
       0 => {
-        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = unwrap_reg!(self, instr & 0xF);
         let sr2 = self.regs[sr2 as usize];
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_add(sr2);
       },
       1 => {
-        let imm = sext(instr & 0xFF, 8);
+        let imm = sext(instr & 0x7F, 8);
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_add(imm as u32);
       },
@@ -227,18 +227,18 @@ impl CPU {
   }
 
   fn SUB(&mut self, instr: u16) {
-    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+    let sr1 = unwrap_reg!(self, (instr >> 8) & 0xF);
 
-    let mode = (instr >> 8) & 0x1;
+    let mode = (instr >> 7) & 0x1;
     match mode {
       0 => {
-        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = unwrap_reg!(self, instr & 0xF);
         let sr2 = self.regs[sr2 as usize];
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_sub(sr2);
       },
       1 => {
-        let imm = sext(instr & 0xFF, 8);
+        let imm = sext(instr & 0x7F, 8);
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_sub(imm as u32);
       },
@@ -247,18 +247,18 @@ impl CPU {
   }
 
   fn MUL(&mut self, instr: u16) {
-    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+    let sr1 = unwrap_reg!(self, (instr >> 8) & 0xF);
 
-    let mode = (instr >> 8) & 0x1;
+    let mode = (instr >> 7) & 0x1;
     match mode {
       0 => {
-        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = unwrap_reg!(self, instr & 0xF);
         let sr2 = self.regs[sr2 as usize];
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_mul(sr2);
       },
       1 => {
-        let imm = sext(instr & 0xFF, 8);
+        let imm = sext(instr & 0x7F, 8);
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_mul(imm as u32);
       },
@@ -267,18 +267,18 @@ impl CPU {
   }
 
   fn DIV(&mut self, instr: u16) {
-    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+    let sr1 = unwrap_reg!(self, (instr >> 8) & 0xF);
 
-    let mode = (instr >> 8) & 0x1;
+    let mode = (instr >> 7) & 0x1;
     match mode {
       0 => {
-        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = unwrap_reg!(self, instr & 0xF);
         let sr2 = self.regs[sr2 as usize];
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_div(sr2);
       },
       1 => {
-        let imm = sext(instr & 0xFF, 8);
+        let imm = sext(instr & 0x7F, 8);
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_div(imm as u32);
       },
@@ -287,18 +287,18 @@ impl CPU {
   }
 
   fn REM(&mut self, instr: u16) {
-    let sr1 = unwrap_reg!(self, (instr >> 9) & 0x7);
+    let sr1 = unwrap_reg!(self, (instr >> 8) & 0xF);
 
-    let mode = (instr >> 8) & 0x1;
+    let mode = (instr >> 7) & 0x1;
     match mode {
       0 => {
-        let sr2 = unwrap_reg!(self, instr & 0xFF);
+        let sr2 = unwrap_reg!(self, instr & 0xF);
         let sr2 = self.regs[sr2 as usize];
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_rem(sr2);
       },
       1 => {
-        let imm = sext(instr & 0xFF, 8);
+        let imm = sext(instr & 0x7F, 8);
         let sr1 = &mut self.regs[sr1 as usize];
         *sr1 = sr1.wrapping_rem(imm as u32);
       },

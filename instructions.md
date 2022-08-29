@@ -10,17 +10,17 @@ Exit with zero
 
 ## STR
 
-| 0001 | 000 | 000000000 |
-| ---- | --- | --------- |
-| OPC  | SR  | OFF       |
+| 0001 | 0000 | 00000000 |
+| ---- | ---- | -------- |
+| OPC  | SR   | OFF      |
 
 Store SR to memory at RPC + OFF
 
 ## LDR
 
-| 0010 | 000 | 000000000 |
-| ---- | --- | --------- |
-| OPC  | DR  | OFF       |
+| 0010 | 0000 | 00000000 |
+| ---- | ---- | -------- |
+| OPC  | DR   | OFF      |
 
 Load 16 bit from memory at RPC + OFF and store it into DR
 
@@ -50,9 +50,9 @@ Load 16 bit from memory at RPC + OFF and store it into DR
 
 ## CMP
 
-| 0101 | 000 | 000 | 000 | 000     |
-| ---- | --- | --- | --- | ------- |
-| OPC  | M   | SR1 | SR2 | Ignored |
+| 0101 | 000 | 0000 | 0000 | 0       |
+| ---- | --- | ---- | ---- | ------- |
+| OPC  | M   | SR1  | SR2  | Ignored |
 
 - M == 0:
   Compare SR1 and SR2 and put 1 into RC if equal
@@ -90,20 +90,20 @@ Set RPC to ADDR
 
 ## MOV
 
-| 1000 | 000 | 0   | 00000000  |
-| ---- | --- | --- | --------- |
-| OPC  | DR  | M   | SR \| IMM |
+| 1000 | 0000 | 0   | 0000000   |
+| ---- | ---- | --- | --------- |
+| OPC  | DR   | M   | SR \| IMM |
 
 - M == 0:
   Copy the value of SR into DR
 - M == 1:
-- Set DR's value to IMM
+  Set DR's value to IMM
 
 ## ADD
 
-| 1001 | 000 | 0   | 00000000   |
-| ---- | --- | --- | ---------- |
-| OPC  | SR1 | M   | SR2 \| IMM |
+| 1001 | 0000 | 0   | 0000000    |
+| ---- | ---- | --- | ---------- |
+| OPC  | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Add the value of SR1 and SR2 and store the result to SR1
@@ -112,9 +112,9 @@ Set RPC to ADDR
 
 ## SUB
 
-| 1010 | 000 | 0   | 00000000   |
-| ---- | --- | --- | ---------- |
-| OPC  | SR1 | M   | SR2 \| IMM |
+| 1010 | 0000 | 0   | 0000000    |
+| ---- | ---- | --- | ---------- |
+| OPC  | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Subtract the value of SR1 and SR2 and store the result to SR1
@@ -123,9 +123,9 @@ Set RPC to ADDR
 
 ## MUL
 
-| 1011 | 000 | 0   | 00000000   |
-| ---- | --- | --- | ---------- |
-| OPC  | SR1 | M   | SR2 \| IMM |
+| 1011 | 0000 | 0   | 0000000    |
+| ---- | ---- | --- | ---------- |
+| OPC  | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Multiply the value of SR1 and SR2 and store the result to SR1
@@ -134,9 +134,9 @@ Set RPC to ADDR
 
 ## DIV
 
-| 1100 | 000 | 0   | 00000000   |
-| ---- | --- | --- | ---------- |
-| OPC  | SR1 | M   | SR2 \| IMM |
+| 1100 | 0000 | 0   | 0000000    |
+| ---- | ---- | --- | ---------- |
+| OPC  | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Divide the value of SR1 and SR2 and store the result to SR1
@@ -145,9 +145,9 @@ Set RPC to ADDR
 
 ## REM
 
-| 1101 | 000 | 0   | 00000000   |
-| ---- | --- | --- | ---------- |
-| OPC  | SR1 | M   | SR2 \| IMM |
+| 1101 | 0000 | 0   | 0000000    |
+| ---- | ---- | --- | ---------- |
+| OPC  | SR1  | M   | SR2 \| IMM |
 
 - M == 0:
   Divide the value of SR1 and SR2 and store the remainder to SR1

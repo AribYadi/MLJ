@@ -29,13 +29,13 @@ fn test_EXT() { run_cpu(&[0x0000], |_| ()); }
 
 #[test]
 fn test_STR() {
-  let cpu = run_cpu(&[0x1201], |cpu| cpu.regs[1] = 10);
+  let cpu = run_cpu(&[0x1101], |cpu| cpu.regs[1] = 10);
   assert_eq!(cpu.mem[PC_START as usize + 2], 10);
 }
 
 #[test]
 fn test_LDR() {
-  let cpu = run_cpu(&[0x2201], |cpu| cpu.regs[1] = 10);
+  let cpu = run_cpu(&[0x2101], |cpu| cpu.regs[1] = 10);
   assert_eq!(cpu.regs[1], 0);
 }
 
@@ -57,32 +57,32 @@ fn test_DEC() {
 
 #[test]
 fn test_CMP() {
-  let cpu = run_cpu(&[0x5050], |cpu| {
+  let cpu = run_cpu(&[0x5024], |cpu| {
     cpu.regs[1] = 10;
     cpu.regs[2] = 10;
   });
   assert_eq!(cpu.regs[Reg::RC as usize], 1);
-  let cpu = run_cpu(&[0x5250], |cpu| {
+  let cpu = run_cpu(&[0x5224], |cpu| {
     cpu.regs[1] = 10;
     cpu.regs[2] = 11;
   });
   assert_eq!(cpu.regs[Reg::RC as usize], 1);
-  let cpu = run_cpu(&[0x5450], |cpu| {
+  let cpu = run_cpu(&[0x5424], |cpu| {
     cpu.regs[1] = 10;
     cpu.regs[2] = 11;
   });
   assert_eq!(cpu.regs[Reg::RC as usize], 1);
-  let cpu = run_cpu(&[0x5650], |cpu| {
+  let cpu = run_cpu(&[0x5624], |cpu| {
     cpu.regs[1] = 10;
     cpu.regs[2] = 10;
   });
   assert_eq!(cpu.regs[Reg::RC as usize], 1);
-  let cpu = run_cpu(&[0x5850], |cpu| {
+  let cpu = run_cpu(&[0x5824], |cpu| {
     cpu.regs[1] = 11;
     cpu.regs[2] = 10;
   });
   assert_eq!(cpu.regs[Reg::RC as usize], 1);
-  let cpu = run_cpu(&[0x5A50], |cpu| {
+  let cpu = run_cpu(&[0x5A24], |cpu| {
     cpu.regs[1] = 10;
     cpu.regs[2] = 10;
   });
@@ -107,7 +107,7 @@ fn test_JMP() {
 fn test_MOV() {
   let cpu = run_cpu(&[0x8001], |cpu| cpu.regs[1] = 10);
   assert_eq!(cpu.regs[0], 10);
-  let cpu = run_cpu(&[0x810A], |_| ());
+  let cpu = run_cpu(&[0x808A], |_| ());
   assert_eq!(cpu.regs[0], 10);
 }
 
@@ -118,7 +118,7 @@ fn test_ADD() {
     cpu.regs[1] = 20;
   });
   assert_eq!(cpu.regs[0], 30);
-  let cpu = run_cpu(&[0x910A], |cpu| {
+  let cpu = run_cpu(&[0x908A], |cpu| {
     cpu.regs[0] = 10;
   });
   assert_eq!(cpu.regs[0], 20);
@@ -131,7 +131,7 @@ fn test_SUB() {
     cpu.regs[1] = 20;
   });
   assert_eq!(cpu.regs[0], -10i32 as u32);
-  let cpu = run_cpu(&[0xA10A], |cpu| {
+  let cpu = run_cpu(&[0xA08A], |cpu| {
     cpu.regs[0] = 10;
   });
   assert_eq!(cpu.regs[0], 0);
@@ -144,7 +144,7 @@ fn test_MUL() {
     cpu.regs[1] = 20;
   });
   assert_eq!(cpu.regs[0], 200);
-  let cpu = run_cpu(&[0xB10A], |cpu| {
+  let cpu = run_cpu(&[0xB08A], |cpu| {
     cpu.regs[0] = 10;
   });
   assert_eq!(cpu.regs[0], 100);
@@ -157,7 +157,7 @@ fn test_DIV() {
     cpu.regs[1] = 10;
   });
   assert_eq!(cpu.regs[0], 2);
-  let cpu = run_cpu(&[0xC10A], |cpu| {
+  let cpu = run_cpu(&[0xC08A], |cpu| {
     cpu.regs[0] = 10;
   });
   assert_eq!(cpu.regs[0], 1);
@@ -170,7 +170,7 @@ fn test_REM() {
     cpu.regs[1] = 10;
   });
   assert_eq!(cpu.regs[0], 0);
-  let cpu = run_cpu(&[0xD10A], |cpu| {
+  let cpu = run_cpu(&[0xD08A], |cpu| {
     cpu.regs[0] = 25;
   });
   assert_eq!(cpu.regs[0], 5);
