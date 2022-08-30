@@ -19,9 +19,9 @@ An array of 16 bits with 0xFFFF in length
 
 ### Layout
 
-| 0x0000..0x2000 | 0x0201..0xFFFF        |
-| -------------- | --------------------- |
-| Call Stack     | Program Counter Start |
+| 0x0000..0x0200 | 0x0201..0x1201        | 0x1202..0x2202 |
+| -------------- | --------------------- | -------------- |
+| Call Stack     | Program Counter Start | Display        |
 
 ## Instruction
 

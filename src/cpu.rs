@@ -8,8 +8,12 @@ use crate::error;
 const MEM_SIZE: usize = 0xFFFF;
 type AddrType = u16;
 const REGS_COUNT: usize = 9;
+pub const DISPLAY_SIZE: usize = 64;
+const PC_MAX: u16 = PC_START + 0x1000;
+
 const CALL_STACK_START: u16 = 0x0200;
 const PC_START: u16 = CALL_STACK_START + 1;
+pub const DISPLAY_START: u16 = PC_START + PC_MAX + 1;
 
 macro_rules! unwrap_reg {
   ($self:ident, $reg:expr) => {{
@@ -33,7 +37,7 @@ enum Reg {
 pub struct CPU {
   pub mem: [u16; MEM_SIZE],
   pub regs: [u32; REGS_COUNT],
-  exit_handler: fn(i32) -> !,
+  pub exit_handler: fn(i32) -> !,
 }
 
 impl CPU {

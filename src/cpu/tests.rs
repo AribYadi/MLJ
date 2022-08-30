@@ -2,12 +2,9 @@
 
 use super::*;
 
-fn panic(e: i32) -> ! {
-  panic!("Exited with error code {e}.");
-}
+fn panic(e: i32) -> ! { panic!("Exited with error code {e}.") }
 
 fn run_cpu(code: &[u16], init: fn(&mut CPU)) -> CPU { run_cpu_n_times(code, code.len(), init) }
-
 fn run_cpu_n_times(code: &[u16], n: usize, init: fn(&mut CPU)) -> CPU {
   let mut cpu = CPU::new();
   cpu.exit_handler = panic;
