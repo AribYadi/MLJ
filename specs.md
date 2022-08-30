@@ -17,6 +17,12 @@ For [Endianness](https://en.wikipedia.org/wiki/Endianness) MLJ uses big-endian
 
 An array of 16 bits with 0xFFFF in length
 
+### Layout
+
+| 0x0000..0x2000 | 0x0201..0xFFFF        |
+| -------------- | --------------------- |
+| Call Stack     | Program Counter Start |
+
 ## Instruction
 
 Instructions are 16 bits and are read from memory at addr RPC \

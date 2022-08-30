@@ -8,7 +8,7 @@ use crate::error;
 const MEM_SIZE: usize = 0xFFFF;
 type AddrType = u16;
 const REGS_COUNT: usize = 9;
-const CALL_STACK_START: u16 = 0x200;
+const CALL_STACK_START: u16 = 0x0200;
 const PC_START: u16 = CALL_STACK_START + 1;
 
 macro_rules! unwrap_reg {
