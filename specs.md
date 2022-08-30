@@ -1,5 +1,9 @@
 # Specification for MLJ
 
+## Endianness
+
+For [Endianness](https://en.wikipedia.org/wiki/Endianness) MLJ uses big-endian
+
 ## Register
 
 | Name   | Bits | Purpose         |
