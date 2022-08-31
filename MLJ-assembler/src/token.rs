@@ -33,4 +33,6 @@ pub enum Token {
   EXT,
   #[regex("STR|str")]
   STR,
+  #[regex("LDR|ldr")]
+  LDR,
 }

@@ -100,6 +100,17 @@ fn main() {
         };
         out_file.write_u16::<BigEndian>(0x0800 | (sr << 7) | off)
       },
+      Token::LDR => {
+        let sr = match get_reg!() {
+          Some(sr) => sr,
+          None => continue,
+        };
+        let off = match get_num!(0x7F) {
+          Some(off) => off,
+          None => continue,
+        };
+        out_file.write_u16::<BigEndian>(0x1000 | (sr << 7) | off)
+      },
 
       _ => err_at_pos!(Ok(()), "Expected instruction!"),
     };
