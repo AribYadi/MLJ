@@ -47,72 +47,107 @@ fn main() {
 
   let mut errored = false;
   macro_rules! err_at_pos {
-    ($ret:expr, $($tt:tt)*) => {{
+    ($($tt:tt)*) => {{
       let (line, col) = lookup.get(lexer.span().start);
-      eprint!("{in_file_path}:{line}:{col}");
+      eprint!("{in_file_path}:{line}:{col} ");
       eprintln!($($tt)*);
       errored = true;
-      $ret
+      continue;
     }};
   }
 
   macro_rules! get_reg {
     () => {
-      match lexer.next() {
-        Some(Token::R0) => Some(0),
-        Some(Token::R1) => Some(1),
-        Some(Token::R2) => Some(2),
-        Some(Token::R3) => Some(3),
-        Some(Token::R4) => Some(4),
-        Some(Token::R5) => Some(5),
-        Some(Token::RC) => Some(6),
-        Some(Token::RPC) => Some(7),
-        Some(Token::RSP) => Some(8),
-        _ => err_at_pos!(None, "Expected register!"),
+      match lexer.clone().next() {
+        Some(Token::R0) => {
+          lexer.next();
+          Some(0)
+        },
+        Some(Token::R1) => {
+          lexer.next();
+          Some(1)
+        },
+        Some(Token::R2) => {
+          lexer.next();
+          Some(2)
+        },
+        Some(Token::R3) => {
+          lexer.next();
+          Some(3)
+        },
+        Some(Token::R4) => {
+          lexer.next();
+          Some(4)
+        },
+        Some(Token::R5) => {
+          lexer.next();
+          Some(5)
+        },
+        Some(Token::RC) => {
+          lexer.next();
+          Some(6)
+        },
+        Some(Token::RPC) => {
+          lexer.next();
+          Some(7)
+        },
+        Some(Token::RSP) => {
+          lexer.next();
+          Some(8)
+        },
+        _ => None,
       }
     };
   }
 
   macro_rules! get_num {
     ($max:literal) => {
-      match lexer.next() {
+      match lexer.clone().next() {
         Some(Token::Number) => {
+          lexer.next();
           let number = lexer.slice().parse::<i64>().unwrap();
           Some(((number % $max) & $max) as u16)
         },
-        _ => err_at_pos!(None, "Expected a number!"),
+        _ => None,
       }
     };
   }
 
   while let Some(token) = lexer.next() {
     let write_result = match token {
-      Token::Unknown => err_at_pos!(Ok(()), "Unknown character `{ch}`!", ch = lexer.slice()),
+      Token::Unknown => err_at_pos!("Unknown character `{ch}`!", ch = lexer.slice()),
       Token::EXT => out_file.write_u16::<BigEndian>(0x0000),
       Token::STR => {
         let sr = match get_reg!() {
           Some(sr) => sr,
-          None => continue,
+          None => err_at_pos!("Expected register!"),
         };
         let off = match get_num!(0x7F) {
           Some(off) => off,
-          None => continue,
+          None => err_at_pos!("Expected a number!"),
         };
         out_file.write_u16::<BigEndian>(0x0800 | (sr << 7) | off)
       },
       Token::LDR => {
         let sr = match get_reg!() {
           Some(sr) => sr,
-          None => continue,
+          None => err_at_pos!("Expected register!"),
         };
         let off = match get_num!(0x7F) {
           Some(off) => off,
-          None => continue,
+          None => err_at_pos!("Expected a number!"),
         };
         out_file.write_u16::<BigEndian>(0x1000 | (sr << 7) | off)
       },
+      Token::INC => match get_num!(0x3FF) {
+        Some(off) => out_file.write_u16::<BigEndian>(0x1800 | off),
+        None => match get_reg!() {
+          Some(reg) => out_file.write_u16::<BigEndian>(0x1C00 | reg),
+          None => err_at_pos!("Expected a memory offset or a register!"),
+        },
+      },
 
-      _ => err_at_pos!(Ok(()), "Expected instruction!"),
+      _ => err_at_pos!("Expected instruction!"),
     };
     match write_result {
       Ok(()) => (),

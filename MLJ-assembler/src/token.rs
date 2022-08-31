@@ -1,7 +1,7 @@
 use logos::Logos;
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Logos)]
+#[derive(Logos, Clone, Copy)]
 pub enum Token {
   #[regex("[\n\r\t ]+", logos::skip)]
   #[error]
@@ -35,4 +35,6 @@ pub enum Token {
   STR,
   #[regex("LDR|ldr")]
   LDR,
+  #[regex("INC|inc")]
+  INC,
 }
