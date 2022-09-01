@@ -51,3 +51,11 @@ fn test_assemble_CMP() {
 
 #[test]
 fn test_assemble_JMC() { test_assemble("jmc 0x0201", &[0x3201]) }
+
+#[test]
+#[should_panic]
+fn test_assemble_non_instr() { test_assemble("123", &[]) }
+
+#[test]
+#[should_panic]
+fn test_assemble_wrong_arg() { test_assemble("cmp r0 le r1", &[]) }
