@@ -78,12 +78,12 @@ pub fn assemble(
       match lexer.clone().next() {
         Some(Token::Number) => {
           lexer.next();
-          let slice = lexer.slice();
-          let number = i64::from_str_radix(
-            slice.strip_prefix("0x").unwrap_or(slice),
-            if slice.starts_with("0x") { 16 } else { 10 },
-          )
-          .unwrap();
+          let number = lexer.slice().parse::<i64>().unwrap();
+          Some(((number % $max) & $max) as u16)
+        },
+        Some(Token::HexNumber) => {
+          lexer.next();
+          let number = i64::from_str_radix(lexer.slice().strip_prefix("0x").unwrap(), 16).unwrap();
           Some(((number % $max) & $max) as u16)
         },
         _ => None,

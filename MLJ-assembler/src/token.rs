@@ -7,8 +7,10 @@ pub enum Token {
   #[error]
   Unknown,
 
-  #[regex("(0x)?[0-9]+")]
+  #[regex("[0-9]+")]
   Number,
+  #[regex("0x[0-9a-fA-F]+")]
+  HexNumber,
 
   #[regex("eq")]
   ModeEq,
