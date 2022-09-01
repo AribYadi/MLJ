@@ -4,7 +4,6 @@ on:
       - "**/*.md"
       - ".rustfmt.toml"
       - "rust-toolchain"
-      - ".github/workflows/ci.yaml"
   pull_request:
 
 name: CI
