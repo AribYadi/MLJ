@@ -158,6 +158,13 @@ pub fn assemble(
         };
         out_file.write_u16::<BE>(0x3000 | addr)
       },
+      Token::JMP => {
+        let addr = match get_num!(0x7FF) {
+          Some(addr) => addr,
+          None => err_at_pos!("Expected address!"),
+        };
+        out_file.write_u16::<BE>(0x3800 | addr)
+      },
 
       _ => err_at_pos!("Expected instruction!"),
     };

@@ -58,4 +58,6 @@ pub enum Token {
   CMP,
   #[regex("JMC|jmc")]
   JMC,
+  #[regex("JMP|jmp")]
+  JMP,
 }
