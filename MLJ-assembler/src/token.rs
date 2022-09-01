@@ -10,6 +10,19 @@ pub enum Token {
   #[regex("[0-9]+")]
   Number,
 
+  #[regex("eq")]
+  ModeEq,
+  #[regex("ne")]
+  ModeNe,
+  #[regex("lt")]
+  ModeLt,
+  #[regex("le")]
+  ModeLe,
+  #[regex("gt")]
+  ModeGt,
+  #[regex("ge")]
+  ModeGe,
+
   #[regex("R0|r0")]
   R0,
   #[regex("R1|r1")]
@@ -39,4 +52,6 @@ pub enum Token {
   INC,
   #[regex("DEC|dec")]
   DEC,
+  #[regex("CMP|cmp")]
+  CMP,
 }

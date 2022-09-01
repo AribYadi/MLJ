@@ -153,6 +153,26 @@ fn main() {
           None => err_at_pos!("Expected a memory offset or a register!"),
         },
       },
+      Token::CMP => {
+        let sr1 = match get_reg!() {
+          Some(sr1) => sr1,
+          None => err_at_pos!("Expected register!"),
+        };
+        let sr2 = match get_reg!() {
+          Some(sr2) => sr2,
+          None => err_at_pos!("Expected register!"),
+        };
+        let mode = match lexer.next() {
+          Some(Token::ModeEq) => 0,
+          Some(Token::ModeNe) => 1,
+          Some(Token::ModeLt) => 2,
+          Some(Token::ModeLe) => 3,
+          Some(Token::ModeGt) => 4,
+          Some(Token::ModeGe) => 5,
+          _ => err_at_pos!("Expected `CMP` mode!"),
+        };
+        out_file.write_u16::<BigEndian>(0x2800 | (mode << 8) | (sr1 << 4) | sr2)
+      },
 
       _ => err_at_pos!("Expected instruction!"),
     };
