@@ -29,10 +29,6 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: check
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --manifest-path MLJ-assembler/Cargo.toml
 
   test:
     name: Test
@@ -48,10 +44,6 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: test
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --manifest-path MLJ-assembler/Cargo.toml
 
   lint:
     name: Lint
@@ -70,16 +62,8 @@ jobs:
           args: --all -- --check
       - uses: actions-rs/cargo@v1
         with:
-          command: fmt
-          args: --all --manifest-path MLJ-assembler/Cargo.toml -- --check
-      - uses: actions-rs/cargo@v1
-        with:
           command: clippy
           args: -- -D warnings
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --manifest-path MLJ-assembler/Cargo.toml -- -D warnings
 
   code-coverage:
     name: Code Coverage
@@ -94,14 +78,6 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: test
-        env:
-          CARGO_INCREMENTAL: "0"
-          RUSTFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
-          RUSTDOCFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --manifest-path MLJ-assembler/Cargo.toml
         env:
           CARGO_INCREMENTAL: "0"
           RUSTFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
