@@ -71,6 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: sudo apt-get install -y libasound2 libasound2-dev
+      - run: sudo apt-get install -y lcov
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
@@ -87,7 +88,8 @@ jobs:
         with:
           command: install
           args: --locked grcov
-      - run: grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing --ignore '**/main.rs' -o lcov.info
+      - run: grcov . -s . --binary-path ./target/debug/ -t lcov --llvm --branch --ignore-not-existing --ignore '**/main.rs' -o lcov.info
+      - run: lcov --extract lcov.info -o lcov.info 'MLJ/src/*' 'MLJ-assembler/src/*'
       - uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
