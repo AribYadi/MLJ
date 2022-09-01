@@ -37,4 +37,6 @@ pub enum Token {
   LDR,
   #[regex("INC|inc")]
   INC,
+  #[regex("DEC|dec")]
+  DEC,
 }

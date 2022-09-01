@@ -49,7 +49,7 @@ fn main() {
   macro_rules! err_at_pos {
     ($($tt:tt)*) => {{
       let (line, col) = lookup.get(lexer.span().start);
-      eprint!("{in_file_path}:{line}:{col} ");
+      eprint!("{in_file_path}:{line}:{col}: ");
       eprintln!($($tt)*);
       errored = true;
       continue;
@@ -143,6 +143,13 @@ fn main() {
         Some(off) => out_file.write_u16::<BigEndian>(0x1800 | off),
         None => match get_reg!() {
           Some(reg) => out_file.write_u16::<BigEndian>(0x1C00 | reg),
+          None => err_at_pos!("Expected a memory offset or a register!"),
+        },
+      },
+      Token::DEC => match get_num!(0x3FF) {
+        Some(off) => out_file.write_u16::<BigEndian>(0x2000 | off),
+        None => match get_reg!() {
+          Some(reg) => out_file.write_u16::<BigEndian>(0x2400 | reg),
           None => err_at_pos!("Expected a memory offset or a register!"),
         },
       },
