@@ -105,7 +105,12 @@ fn main() {
       match lexer.clone().next() {
         Some(Token::Number) => {
           lexer.next();
-          let number = lexer.slice().parse::<i64>().unwrap();
+          let slice = lexer.slice();
+          let number = i64::from_str_radix(
+            slice.strip_prefix("0x").unwrap_or(slice),
+            if slice.starts_with("0x") { 16 } else { 10 },
+          )
+          .unwrap();
           Some(((number % $max) & $max) as u16)
         },
         _ => None,
@@ -172,6 +177,13 @@ fn main() {
           _ => err_at_pos!("Expected `CMP` mode!"),
         };
         out_file.write_u16::<BigEndian>(0x2800 | (mode << 8) | (sr1 << 4) | sr2)
+      },
+      Token::JMC => {
+        let addr = match get_num!(0x7FF) {
+          Some(addr) => addr,
+          None => err_at_pos!("Expected address!"),
+        };
+        out_file.write_u16::<BigEndian>(0x3000 | addr)
       },
 
       _ => err_at_pos!("Expected instruction!"),

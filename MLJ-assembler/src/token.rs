@@ -7,7 +7,7 @@ pub enum Token {
   #[error]
   Unknown,
 
-  #[regex("[0-9]+")]
+  #[regex("(0x)?[0-9]+")]
   Number,
 
   #[regex("eq")]
@@ -54,4 +54,6 @@ pub enum Token {
   DEC,
   #[regex("CMP|cmp")]
   CMP,
+  #[regex("JMC|jmc")]
+  JMC,
 }
